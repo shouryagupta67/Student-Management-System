@@ -1,5 +1,6 @@
 package com.studentmgmt.student_management.controller;
 
+import com.studentmgmt.student_management.Exception.StudentNotFoundException;
 import com.studentmgmt.student_management.entity.Student;
 import com.studentmgmt.student_management.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class StudentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
+         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
 }

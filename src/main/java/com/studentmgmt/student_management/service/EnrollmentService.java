@@ -1,5 +1,7 @@
 package com.studentmgmt.student_management.service;
 
+import com.studentmgmt.student_management.Exception.CourseNotFoundException;
+import com.studentmgmt.student_management.Exception.StudentNotFoundException;
 import com.studentmgmt.student_management.entity.Course;
 import com.studentmgmt.student_management.entity.Enrollment;
 import com.studentmgmt.student_management.repository.CourseRepository;
@@ -26,9 +28,9 @@ public class EnrollmentService {
 
     public Enrollment enrollStudent(Long studentId, Long courseId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new StudentNotFoundException("Student not found"));
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
 
         Enrollment enrollment = new Enrollment();
         enrollment.setStudent(student);
@@ -39,7 +41,7 @@ public class EnrollmentService {
 
     public List<Course> getCoursesByStudent(Long studentId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new StudentNotFoundException("Student not found"));
         return student.getEnrollments().stream()
                 .map(Enrollment::getCourse)
                 .collect(Collectors.toList());
@@ -47,7 +49,7 @@ public class EnrollmentService {
 
     public List<Student> getStudentsByCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
         return course.getEnrollments().stream()
                 .map(Enrollment::getStudent)
                 .collect(Collectors.toList());
@@ -55,5 +57,6 @@ public class EnrollmentService {
 
     public void cancelEnrollment(Long enrollmentId) {
         enrollmentRepository.deleteById(enrollmentId);
+
     }
 }

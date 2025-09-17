@@ -1,6 +1,8 @@
 package com.studentmgmt.student_management.service;
 
+import com.studentmgmt.student_management.Exception.StudentNotFoundException;
 import com.studentmgmt.student_management.entity.Student;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository) {
+
         this.studentRepository = studentRepository;
     }
 
@@ -21,11 +24,14 @@ public class StudentService {
     }
 
     public List<Student> getAllStudents() {
+
         return studentRepository.findAll();
     }
 
-    public Optional<Student> getStudentById(Long id) {
-        return studentRepository.findById(id);
+    public Optional<Student> getStudentById(Long id)
+    {
+        return Optional.ofNullable(studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student Not Found!")));
     }
 
     public Student updateStudent(Long id, Student student) {
@@ -33,10 +39,11 @@ public class StudentService {
             s.setName(student.getName());
             s.setEmail(student.getEmail());
             return studentRepository.save(s);
-        }).orElseThrow(() -> new RuntimeException("Student not found"));
+        }).orElseThrow(() -> new StudentNotFoundException("Student not found"));
     }
 
     public void deleteStudent(Long id) {
+
         studentRepository.deleteById(id);
     }
 }
